@@ -1,0 +1,194 @@
+<script type="text/javascript" src="https://unpkg.com/moment@latest"></script>
+<script
+	type="text/javascript"
+	src="https://unpkg.com/vis-data@latest/peer/umd/vis-data.min.js"
+></script>
+<script
+	type="text/javascript"
+	src="https://unpkg.com/vis-timeline@latest/peer/umd/vis-timeline-graph2d.min.js"
+></script>
+<link
+	rel="stylesheet"
+	type="text/css"
+	href="https://unpkg.com/vis-timeline/styles/vis-timeline-graph2d.min.css"
+/>
+<!-- You may include other packages like Vis Network or Vis Graph3D here. -->
+<!-- You can optionally include locales for Moment if you need any. -->
+
+<div id="visualization"></div>
+<style>
+
+.vis-timeline {
+      border: none;
+      background-color: rgba(249, 247, 247, 0.2);
+    }
+	.vis-item.theme-default {
+		/* background-color: rgb(99, 180, 255); */
+		background-color: #eee;
+		border: none;
+		color: #333;
+		padding: 2px;
+		overflow: visible;
+		border-radius: 8px;
+		font-size: 14px;
+	}
+
+	div.vis-tooltip {
+		background-color: #fff;
+		border-radius: 5px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		padding: 10px;
+		border: none;
+	}
+	div.vis-tooltip h1 {
+		font-size: 16px;
+		margin: 6px 6px 12px 6px;
+		padding: 0;
+		font-weight: bold;
+		color: #333;
+	}
+	div.vis-tooltip p {
+		font-size: 12px;
+		margin: 6px;
+		padding: 0;
+		color: #9a9a9a;
+	}
+	.vis-item .vis-item-overflow {
+		overflow: visible;
+	}
+</style>
+<script type="text/javascript">
+	// DOM element where the Timeline will be attached
+	const container = document.getElementById("visualization");
+
+	const groups = new vis.DataSet([
+		{
+			id: 1,
+			content: "Group 1",
+		},
+		{
+			id: 2,
+			content: "Group 2",
+		},
+	]);
+	function customOrder(a, b) {
+		// order by id
+		return a.id - b.id;
+	}
+	// Create a DataSet (allows two way data-binding)
+	const items = new vis.DataSet([
+		{
+			id: 4,
+			content: "item 4",
+			start: "2023-04-16",
+			end: "2023-12-15",
+			group: 2,
+			className: "theme-default",
+			order: customOrder,
+		},
+		{
+			id: 5,
+			content: "item 5",
+			start: "2023-11-01",
+			end: "2023-12-04",
+			group: 2,
+			className: "theme-default",
+
+			order: customOrder,
+		},
+		{
+			id: 6,
+			content: "item 6",
+			className: "theme-default",
+			start: "2023-06-01",
+			end: "2023-12-04",
+			group: 2,
+			order: customOrder,
+		},
+		{
+			id: 1,
+			content: "item 1",
+			start: "2023-04-20",
+			group: 1,
+			order: customOrder,
+			className: "theme-default",
+		},
+		{
+			id: 2,
+			className: "theme-default",
+			content: "item 2 item 2 item 2",
+			start: "2023-04-14 00:00:00",
+			end: "2023-04-14 23:59:59",
+			title: "this is title!2",
+			group: 1,
+			order: customOrder,
+		},
+		{
+			id: 3,
+			className: "theme-default",
+			content: "item 3",
+			start: "2023-04-18",
+			group: 1,
+			order: customOrder,
+		},
+		{
+			id: 7,
+			className: "theme-default",
+			content: "item 7",
+			start: "2023-12-01",
+			group: 1,
+			order: customOrder,
+		},
+		{
+			id: 8,
+			content: "item 8",
+			start: "2022-02-01",
+			end: "2023-12-04",
+			title: "<h1>this is title!</h1>",
+			group: 1,
+			className: "theme-default",
+			order: customOrder,
+			age: 18,
+		},
+		{
+			id: 9,
+			content: "这是9个任务",
+			start: "2023-12-15",
+			end: "2023-12-15 23:59:59",
+			title: "Hi",
+			group: 1,
+			className: "theme-default",
+			order: customOrder,
+			age: 18,
+		},
+	]);
+
+	// Configuration for the Timeline
+	const options = {
+		tooltip: {
+			followMouse: true,
+			overflowMethod: "cap",
+			template: function (item, element, data) {
+				const tips = `<div class="tips-card"><h1>${item.title}</h1>
+<p>Begin At ${item.start.getFullYear()}-${
+					item.start.getMonth() + 1
+				}-${item.start.getDay()}</p>
+<p>${item.content}</p></div>
+    `;
+				return tips;
+			},
+		},
+        start: "2023-12-08",
+		orientation: {
+			axis: "top",
+			item: "top",
+		},
+	};
+
+	// Create a Timeline
+	const timeline = new vis.Timeline(container, items, options);
+	timeline.setGroups(groups);
+	timeline.on("click", function (properties) {
+		console.log("click", properties);
+	});
+</script>
