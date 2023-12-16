@@ -1,8 +1,130 @@
-/*
-
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
+/**
+* plugin debug
 */
+.gantt-chart-container .vis-foreground .vis-group.even-group {
+  box-sizing: border-box;
+  position: relative;
+  border: none;
+  background-color: var(--background-modifier-hover);
+}
+
+.gantt-chart-container .vis-content .vis-labelset .even-group {
+  box-sizing: border-box;
+  position: relative;
+  border: none;
+  background-color: var(--background-modifier-hover);
+}
+
+.gantt-chart-container .vis-panel.vis-center,
+.vis-panel.vis-top,
+.vis-panel.vis-bottom {
+  border-left-style: none;
+  border-right-style: none;
+}
+
+.gantt-chart-container .vis-panel.vis-center,
+.vis-panel.vis-top,
+.vis-panel.vis-bottom {
+  border-left-style: none;
+  border-right-style: none;
+}
+
+.gantt-chart-container .even-group {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+/**
+* styles
+*/
+.gantt-chart-container .vis-timeline {
+  border: none;
+  /* background-color: rgba(253, 253, 253, 0.1); */
+}
+
+.gantt-chart-container .vis-item.default-vis-item {
+  border: none;
+  color: var(--text-normal);
+  /* TODO */
+  overflow: visible;
+  font-size: 14px;
+  height: 28px;
+  border-radius: 6px;
+  background-color: var(--interactive-accent);
+  padding-left: 5px;
+  cursor: pointer;
+}
+
+.theme-dark .gantt-chart-container .vis-item.default-vis-item {
+  background-color: var(--interactive-accent);
+}
+
+.gantt-chart-container .vis-item.default-vis-item:hover {
+  background-color: var(--interactive-accent-hover);
+}
+
+.gantt-chart-container .vis-item.default-vis-item span {
+  cursor: pointer;
+}
+
+.gantt-chart-container div.vis-tooltip {
+  background-color: var(--background-primary);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border: none;
+  color: var(--text-normal);
+}
+
+.gantt-chart-container .vis-item .vis-item-overflow {
+  overflow: visible;
+}
+
+.gantt-chart-container .vis-labelset .vis-label {
+  border-bottom: none;
+  color: var(--text-normal);
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+
+.gantt-chart-container .vis-time-axis .vis-text.vis-major {
+  box-sizing: border-box;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-normal);
+  overflow: hidden;
+  padding: 3px;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.gantt-chart-container .vis-time-axis .vis-text.vis-minor {
+  box-sizing: border-box;
+  font-size: 12px;
+  color: var(--text-normal);
+  opacity: 0.8;
+  overflow: hidden;
+  padding: 3px;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.gantt-chart-container .vis-current-time {
+  background-color: #ff7f6e;
+  pointer-events: none;
+  width: 3px;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+.gantt-chart-container .vis-foreground .vis-group {
+  box-sizing: border-box;
+  position: relative;
+  border: none;
+}
+
+.gantt-chart-container .vis-time-axis .vis-grid.vis-vertical {
+  position: absolute;
+  border: none;
+}

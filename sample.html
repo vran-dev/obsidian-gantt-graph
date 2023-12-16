@@ -14,49 +14,51 @@
 />
 <!-- You may include other packages like Vis Network or Vis Graph3D here. -->
 <!-- You can optionally include locales for Moment if you need any. -->
-
-<div id="visualization"></div>
 <style>
-
-.vis-timeline {
-      border: none;
-      background-color: rgba(249, 247, 247, 0.2);
-    }
-	.vis-item.theme-default {
-		/* background-color: rgb(99, 180, 255); */
-		background-color: #eee;
-		border: none;
-		color: #333;
-		padding: 2px;
-		overflow: visible;
-		border-radius: 8px;
-		font-size: 14px;
+	.task-item {
+		display: flex;
+		 flex-direction: row; 
+		 align-items: center; 
+		 border-radius: 6px; 
+		 padding: 2px; 
+		 background-color: rgba(234, 234, 234, 0.2); 
+		 padding: 6px 3px 6px 3px;
 	}
-
-	div.vis-tooltip {
-		background-color: #fff;
-		border-radius: 5px;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-		padding: 10px;
-		border: none;
+	.task-item .content {
+		margin-right: 12px;
 	}
-	div.vis-tooltip h1 {
-		font-size: 16px;
-		margin: 6px 6px 12px 6px;
-		padding: 0;
-		font-weight: bold;
-		color: #333;
+	.task-item .status {
+		display: flex; flex-direction: row; align-items: center; border-radius: 12px;background-color: rgba(4, 114, 4, 0.2);padding: 3.5px 6px 3.5px 6px;
 	}
-	div.vis-tooltip p {
+	.task-item .status span {
+		margin-right: 3px;
+	}
+	.task-item .status .indicator{
+		width: 10px;height: 10px; background-color: rgb(13, 144, 13); border-radius: 50%;margin-right: 5px;
+	}
+	.task-item .status .text{
 		font-size: 12px;
-		margin: 6px;
-		padding: 0;
-		color: #9a9a9a;
 	}
-	.vis-item .vis-item-overflow {
-		overflow: visible;
-	}
+
 </style>
+
+<div id="visualization" class="gantt-chart-container "></div>
+
+<div>
+	<h1>hello</h1>
+		
+		<span class="task-item">
+			<span class="content">
+				20231128 通过 IKEA APP 扫码注册成为会员赠送 Prime Card
+			</span>
+			<span class="status">
+				<span class="indicator"></span>
+				<span class="text">TODO</span>
+		</span>
+		</span>
+	</div>
+</div>
+<link rel="stylesheet" type="text/css" href="./styles.css">
 <script type="text/javascript">
 	// DOM element where the Timeline will be attached
 	const container = document.getElementById("visualization");
@@ -65,10 +67,21 @@
 		{
 			id: 1,
 			content: "Group 1",
+			className: "red",
 		},
 		{
 			id: 2,
-			content: "Group 2",
+			content: "Group 3",
+		},
+
+		{
+			id: 33,
+			content: "Group 3",
+			className: "red",
+		},
+		{
+			id: 34,
+			content: "Group 4",
 		},
 	]);
 	function customOrder(a, b) {
@@ -83,7 +96,7 @@
 			start: "2023-04-16",
 			end: "2023-12-15",
 			group: 2,
-			className: "theme-default",
+			className: "default-vis-item",
 			order: customOrder,
 		},
 		{
@@ -92,14 +105,14 @@
 			start: "2023-11-01",
 			end: "2023-12-04",
 			group: 2,
-			className: "theme-default",
+			className: "default-vis-item",
 
 			order: customOrder,
 		},
 		{
 			id: 6,
 			content: "item 6",
-			className: "theme-default",
+			className: "default-vis-item",
 			start: "2023-06-01",
 			end: "2023-12-04",
 			group: 2,
@@ -111,11 +124,11 @@
 			start: "2023-04-20",
 			group: 1,
 			order: customOrder,
-			className: "theme-default",
+			className: "default-vis-item",
 		},
 		{
 			id: 2,
-			className: "theme-default",
+			className: "default-vis-item",
 			content: "item 2 item 2 item 2",
 			start: "2023-04-14 00:00:00",
 			end: "2023-04-14 23:59:59",
@@ -125,7 +138,7 @@
 		},
 		{
 			id: 3,
-			className: "theme-default",
+			className: "default-vis-item",
 			content: "item 3",
 			start: "2023-04-18",
 			group: 1,
@@ -133,7 +146,7 @@
 		},
 		{
 			id: 7,
-			className: "theme-default",
+			className: "default-vis-item",
 			content: "item 7",
 			start: "2023-12-01",
 			group: 1,
@@ -146,7 +159,7 @@
 			end: "2023-12-04",
 			title: "<h1>this is title!</h1>",
 			group: 1,
-			className: "theme-default",
+			className: "default-vis-item",
 			order: customOrder,
 			age: 18,
 		},
@@ -157,28 +170,31 @@
 			end: "2023-12-15 23:59:59",
 			title: "Hi",
 			group: 1,
-			className: "theme-default",
+			className: "default-vis-item",
 			order: customOrder,
 			age: 18,
 		},
 	]);
 
 	// Configuration for the Timeline
+	const oneWeeksAgo = new Date();
+	oneWeeksAgo.setDate(oneWeeksAgo.getDate() - 7);
 	const options = {
 		tooltip: {
-			followMouse: true,
-			overflowMethod: "cap",
+			followMouse: false,
 			template: function (item, element, data) {
-				const tips = `<div class="tips-card"><h1>${item.title}</h1>
-<p>Begin At ${item.start.getFullYear()}-${
+				const tips = `
+<div class="tips-card"><h1>${item.title}</h1>
+<p>start: ${item.start.getFullYear()}-${
 					item.start.getMonth() + 1
 				}-${item.start.getDay()}</p>
-<p>${item.content}</p></div>
     `;
 				return tips;
 			},
 		},
-        start: "2023-12-08",
+		timeAxis: {scale: 'day', step: 1},
+		start: oneWeeksAgo,
+		groupHeightMode: "fixed",
 		orientation: {
 			axis: "top",
 			item: "top",

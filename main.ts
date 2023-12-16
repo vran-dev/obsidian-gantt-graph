@@ -1,67 +1,74 @@
-import { Plugin } from 'obsidian';
-import { Gantt } from 'frappe-gantt';
+import * as Handlebars from "handlebars";
+import { Plugin, TFile } from "obsidian";
+import { DataSet, Timeline, TimelineOptions } from "vis-timeline/standalone";
 
-// Remember to rename these classes and interfaces!
-
-interface MyPluginSettings {
-	mySetting: string;
-}
-
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
-
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
-
+export default class GanttChartPlugin extends Plugin {
 	async onload() {
-		await this.loadSettings();
-
 		//@ts-ignore
-		window.renderGanttGraph = (container: HTMLElement) => {
-			createSvg("svg", {
-				attr: {
-					id: "gantt",
+		window.renderGanttGraph = (
+			container: HTMLElement,
+			tasks,
+			timelineOptions
+		) => {
+			console.log(timelineOptions);
+			const chartContainer = createDiv({
+				cls: "gantt-chart-container",
+				parent: container,
+			});
+
+			const groups = new DataSet(
+				Array.from(
+					new Set(tasks.filter((t) => t.group).map((t) => t.group))
+				).map((t, idx) => {
+					return {
+						id: t,
+						content: t,
+						className: idx % 2 == 0 ? "even-group" : undefined,
+					};
+				})
+			);
+
+			const items = new DataSet([...tasks]);
+			const clonedTimelineOptions = { ...timelineOptions };
+			clonedTimelineOptions.template = 	timelineOptions.template ? Handlebars.compile(timelineOptions.template) : null;
+			// Configuration for the Timeline
+			const chartBeginAt = new Date();
+			chartBeginAt.setDate(chartBeginAt.getDate() - 20);
+			const chartEndAt = new Date();
+			chartEndAt.setDate(chartEndAt.getDate() + 3);
+			const options: TimelineOptions = {
+				timeAxis: { scale: "day", step: 1 },
+				start: chartBeginAt,
+				end: chartEndAt,
+				groupHeightMode: "fixed",
+				zoomable: false,
+				orientation: {
+					axis: "top",
+					item: "top",
 				},
-				parent: container
-			})
-			const tasks = [
-				{
-					id: 'Task 1',
-					name: 'Redesign website',
-					start: '2023-12-01',
-					end: '2023-12-31',
-					progress: 20
-				},
-				{
-					id: 'Task 2',
-					name: 'Redesign website2',
-					start: '2023-10-01',
-					end: '2023-11-31',
-					progress: 20
-				},
-				{
-					id: 'Task 3',
-					name: 'Redesign website3',
-					start: '2023-11-01',
-					end: '2023-12-31',
-					progress: 20
+				...clonedTimelineOptions,
+			};
+
+			// Create a Timeline
+			const timeline = new Timeline(chartContainer, items, options);
+			timeline.setGroups(groups);
+			timeline.on("click", (properties) => {
+				if (properties.item) {
+					const clickedItem = tasks.find(
+						(t) => t.id === properties.item
+					);
+					if (clickedItem.path) {
+						const tFile = this.app.vault.getAbstractFileByPath(
+							clickedItem.path
+						);
+						if (tFile instanceof TFile) {
+							this.app.workspace.getLeaf().openFile(tFile);
+						}
+					}
 				}
-			]
-			new Gantt("#gantt", tasks);
-		}
-
+			});
+		};
 	}
 
-	onunload() {
-
-	}
-
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
+	onunload() {}
 }
